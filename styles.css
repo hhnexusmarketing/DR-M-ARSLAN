@@ -1031,6 +1031,10 @@ ul {
   overflow: hidden;
 }
 
+.chatbot-panel[hidden] {
+  display: none !important;
+}
+
 .chatbot-head {
   display: flex;
   align-items: center;
