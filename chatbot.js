@@ -262,4 +262,9 @@
 
   closeBtn.addEventListener("click", closePanel);
   restartBtn.addEventListener("click", startChat);
+
+  // Auto-open once so visitors notice the assistant
+  setTimeout(() => {
+    if (panel.hidden) openPanel();
+  }, 1200);
 })();
