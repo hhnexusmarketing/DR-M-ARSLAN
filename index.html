@@ -272,6 +272,40 @@
     </div>
   </footer>
 
+  <div class="chatbot" id="chatbot">
+    <button type="button" class="chatbot-launcher" id="chatbot-launcher" aria-label="Open chat" aria-expanded="false" aria-controls="chatbot-panel">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 18.5V7.8A2.8 2.8 0 0 1 7.8 5h8.4A2.8 2.8 0 0 1 19 7.8v6.4A2.8 2.8 0 0 1 16.2 17H9l-4 2.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M8.5 10h7M8.5 13h4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span>Chat</span>
+    </button>
+
+    <section class="chatbot-panel" id="chatbot-panel" hidden aria-label="Clinic assistant">
+      <header class="chatbot-head">
+        <div>
+          <p class="chatbot-title">Al Suba Clinic</p>
+          <p class="chatbot-sub">Dr. M. Arslan Amjad · Assistant</p>
+        </div>
+        <div class="chatbot-head-actions">
+          <button type="button" class="chatbot-icon-btn" id="chatbot-restart" aria-label="Restart chat">↻</button>
+          <button type="button" class="chatbot-icon-btn" id="chatbot-close" aria-label="Close chat">×</button>
+        </div>
+      </header>
+
+      <div class="chatbot-messages" id="chatbot-messages" role="log" aria-live="polite"></div>
+
+      <div class="chatbot-options" id="chatbot-options" hidden></div>
+
+      <form class="chatbot-form" id="chatbot-form" autocomplete="off">
+        <label class="visually-hidden" for="chatbot-input">Your reply</label>
+        <input id="chatbot-input" name="message" type="text" placeholder="Type here…" required />
+        <button type="submit" aria-label="Send">Send</button>
+      </form>
+    </section>
+  </div>
+
   <script src="script.js"></script>
+  <script src="chatbot.js"></script>
 </body>
 </html>
