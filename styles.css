@@ -15,6 +15,7 @@
   --font-display: "Outfit", sans-serif;
   --font-body: "DM Sans", sans-serif;
   --font-script: "Playfair Display", Georgia, serif;
+  --font-urdu: "Noto Nastaliq Urdu", "Segoe UI", Tahoma, sans-serif;
   --shadow-soft: 0 18px 50px rgba(0, 26, 56, 0.12);
   --header-h: 76px;
 }
@@ -1299,4 +1300,24 @@ body.chat-open {
   .chatbot-launcher {
     padding: 0.85rem 1.05rem;
   }
+}
+
+
+[lang="ur"],
+.lab-urdu,
+.chat-bubble,
+.chat-option,
+.chatbot-form input {
+  font-family: var(--font-urdu, "Noto Nastaliq Urdu", "Segoe UI", Tahoma, sans-serif);
+}
+
+.lab-urdu,
+.cta-inner h2[lang="ur"] {
+  line-height: 2;
+}
+
+.strip-item span[lang="ur"] {
+  display: block;
+  line-height: 1.8;
+  font-size: 0.85rem;
 }

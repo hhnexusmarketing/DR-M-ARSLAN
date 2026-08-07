@@ -29,7 +29,7 @@
     "PT / APTT / INR",
     "Semen Analysis",
     "Sputum for AFB",
-    "Not in the list",
+    "فہرست میں نہیں",
   ];
 
   const root = document.getElementById("chatbot");
@@ -73,7 +73,6 @@
     launcher.setAttribute("aria-expanded", "true");
     lockScroll(true);
     if (!messagesEl.childElementCount) startChat();
-    // Avoid auto keyboard jump on phones
     if (!isTouch) {
       setTimeout(function () {
         input.focus();
@@ -96,15 +95,19 @@
     who = who || "bot";
     const el = document.createElement("div");
     el.className = "chat-bubble " + who;
+    el.lang = "ur";
+    el.dir = "rtl";
     el.textContent = text;
     messagesEl.appendChild(el);
     messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
   const setInputVisible = (visible, placeholder) => {
-    placeholder = placeholder || "Type here...";
+    placeholder = placeholder || "یہاں لکھیں...";
     form.classList.toggle("is-hidden", !visible);
     input.placeholder = placeholder;
+    input.lang = "ur";
+    input.dir = "rtl";
     input.value = "";
     input.required = visible;
     if (visible && !isTouch) {
@@ -122,10 +125,13 @@
   const showOptions = (items, onPick) => {
     clearOptions();
     optionsEl.hidden = false;
+    optionsEl.dir = "rtl";
     items.forEach(function (label) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "chat-option";
+      btn.lang = "ur";
+      btn.dir = "rtl";
       btn.textContent = label;
       btn.addEventListener("click", function () {
         onPick(label);
@@ -138,7 +144,6 @@
   const openWhatsApp = (text) => {
     const url =
       "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
-    // Mobile browsers often block window.open
     if (isTouch) {
       window.location.href = url;
     } else {
@@ -153,7 +158,7 @@
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chat-option wa";
-    btn.textContent = "Send on WhatsApp";
+    btn.textContent = "واٹس ایپ پر بھیجیں";
     btn.addEventListener("click", function () {
       openWhatsApp(buildMessage());
     });
@@ -162,57 +167,59 @@
     const again = document.createElement("button");
     again.type = "button";
     again.className = "chat-option";
-    again.textContent = "Start again";
+    again.lang = "ur";
+    again.dir = "rtl";
+    again.textContent = "دوبارہ شروع کریں";
     again.addEventListener("click", startChat);
     optionsEl.appendChild(again);
   };
 
   const buildMessage = () => {
     const lines = [
-      "Assalam o Alaikum,",
-      "Al Suba Clinic enquiry:",
+      "السلام علیکم،",
+      "آل صبا کلینک پوچھ گچھ:",
       "",
-      "Name: " + state.name,
-      "Location: " + state.location,
-      "Type: " + state.category,
+      "نام: " + state.name,
+      "مقام: " + state.location,
+      "قسم: " + state.category,
     ];
 
-    if (state.category === "General") {
-      lines.push("Request: " + state.generalNeed);
-      if (state.generalOther) lines.push("Details: " + state.generalOther);
+    if (state.category === "جنرل") {
+      lines.push("درخواست: " + state.generalNeed);
+      if (state.generalOther) lines.push("تفصیل: " + state.generalOther);
     }
 
-    if (state.category === "Lab Test") {
+    if (state.category === "لیب ٹیسٹ") {
       const test =
-        state.labTest === "Not in the list" ? state.customTest : state.labTest;
-      lines.push("Lab test: " + test);
+        state.labTest === "فہرست میں نہیں" ? state.customTest : state.labTest;
+      lines.push("لیب ٹیسٹ: " + test);
     }
 
-    lines.push("", "Please guide / confirm. Thank you.");
+    lines.push("", "براہ کرم رہنمائی / تصدیق فرمائیں۔ شکریہ۔");
     return lines.join("\n");
   };
 
   const askCategory = () => {
     state.step = "category";
     setInputVisible(false);
-    addBubble("Aapko kya chahiye?");
-    showOptions(["General", "Lab Test"], function (choice) {
+    addBubble("آپ کو کیا چاہیے؟");
+    showOptions(["جنرل", "لیب ٹیسٹ"], function (choice) {
       state.category = choice;
       addBubble(choice, "user");
       clearOptions();
 
-      if (choice === "General") {
+      if (choice === "جنرل") {
         state.step = "general";
-        addBubble("Aap appointment chahte hain ya kuch aur?");
-        showOptions(["Appointment", "Kuch aur"], function (need) {
+        addBubble("کیا آپ اپائنٹمنٹ چاہتے ہیں یا کچھ اور؟");
+        showOptions(["اپائنٹمنٹ", "کچھ اور"], function (need) {
           state.generalNeed = need;
           addBubble(need, "user");
           clearOptions();
 
-          if (need === "Kuch aur") {
+          if (need === "کچھ اور") {
             state.step = "generalOther";
-            addBubble("Please bataiye aapko kya chahiye?");
-            setInputVisible(true, "Apni zaroorat likhein...");
+            addBubble("براہ کرم بتائیں آپ کو کیا چاہیے؟");
+            setInputVisible(true, "اپنی ضرورت لکھیں...");
             return;
           }
 
@@ -222,16 +229,16 @@
       }
 
       state.step = "lab";
-      addBubble("Kaunsa lab test chahiye? List se select karein:");
+      addBubble("کون سا لیب ٹیسٹ چاہیے؟ فہرست سے منتخب کریں:");
       showOptions(LAB_TESTS, function (test) {
         state.labTest = test;
         addBubble(test, "user");
         clearOptions();
 
-        if (test === "Not in the list") {
+        if (test === "فہرست میں نہیں") {
           state.step = "customLab";
-          addBubble("Please likhein kaunsa test chahiye?");
-          setInputVisible(true, "Test ka naam likhein...");
+          addBubble("براہ کرم لکھیں کون سا ٹیسٹ چاہیے؟");
+          setInputVisible(true, "ٹیسٹ کا نام لکھیں...");
           return;
         }
 
@@ -244,7 +251,7 @@
     state.step = "done";
     setInputVisible(false);
     addBubble(
-      "Shukriya! Neeche button se yeh details WhatsApp par bhej sakte hain."
+      "شکریہ! نیچے بٹن سے یہ تفصیلات واٹس ایپ پر بھیج سکتے ہیں۔"
     );
     showWhatsApp();
   };
@@ -261,9 +268,9 @@
     messagesEl.innerHTML = "";
     clearOptions();
     addBubble(
-      "Assalam o Alaikum! Al Suba Clinic assistant. Aapka naam kya hai?"
+      "السلام علیکم! آل صبا کلینک اسسٹنٹ۔ آپ کا نام کیا ہے؟"
     );
-    setInputVisible(true, "Apna naam likhein...");
+    setInputVisible(true, "اپنا نام لکھیں...");
   };
 
   form.addEventListener("submit", function (e) {
@@ -278,9 +285,9 @@
       state.name = value;
       state.step = "location";
       addBubble(
-        "Shukriya, " + state.name + ". Aap kis location / area se hain?"
+        "شکریہ، " + state.name + "۔ آپ کس مقام / علاقے سے ہیں؟"
       );
-      setInputVisible(true, "Location / area likhein...");
+      setInputVisible(true, "مقام / علاقہ لکھیں...");
       return;
     }
 
