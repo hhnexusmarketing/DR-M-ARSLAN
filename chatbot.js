@@ -44,6 +44,11 @@
   const closeBtn = document.getElementById("chatbot-close");
   const restartBtn = document.getElementById("chatbot-restart");
 
+  const isTouch =
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.matchMedia("(pointer: coarse)").matches;
+
   const state = {
     step: "name",
     name: "",
@@ -55,18 +60,32 @@
     customTest: "",
   };
 
+  const isOpen = () => panel.classList.contains("is-open");
+
+  const lockScroll = (lock) => {
+    document.documentElement.classList.toggle("chat-open", lock);
+    document.body.classList.toggle("chat-open", lock);
+  };
+
   const openPanel = () => {
     panel.hidden = false;
     panel.classList.add("is-open");
     launcher.setAttribute("aria-expanded", "true");
+    lockScroll(true);
     if (!messagesEl.childElementCount) startChat();
-    setTimeout(() => input.focus(), 50);
+    // Avoid auto keyboard jump on phones
+    if (!isTouch) setTimeout(() => input.focus(), 50);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
   const closePanel = () => {
     panel.hidden = true;
     panel.classList.remove("is-open");
     launcher.setAttribute("aria-expanded", "false");
+    lockScroll(false);
+    if (document.activeElement && panel.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
   };
 
   const addBubble = (text, who = "bot") => {
@@ -82,7 +101,7 @@
     input.placeholder = placeholder;
     input.value = "";
     input.required = visible;
-    if (visible) setTimeout(() => input.focus(), 40);
+    if (visible && !isTouch) setTimeout(() => input.focus(), 40);
   };
 
   const clearOptions = () => {
@@ -101,6 +120,18 @@
       btn.addEventListener("click", () => onPick(label));
       optionsEl.appendChild(btn);
     });
+    optionsEl.scrollTop = 0;
+  };
+
+  const openWhatsApp = (text) => {
+    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+    // Mobile browsers often block window.open
+    if (isTouch) {
+      window.location.href = url;
+    } else {
+      const win = window.open(url, "_blank", "noopener");
+      if (!win) window.location.href = url;
+    }
   };
 
   const showWhatsApp = () => {
@@ -110,10 +141,7 @@
     btn.type = "button";
     btn.className = "chat-option wa";
     btn.textContent = "Send on WhatsApp";
-    btn.addEventListener("click", () => {
-      const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
-      window.open(url, "_blank", "noopener");
-    });
+    btn.addEventListener("click", () => openWhatsApp(buildMessage()));
     optionsEl.appendChild(btn);
 
     const again = document.createElement("button");
@@ -257,11 +285,56 @@
     }
   });
 
-  launcher.addEventListener("click", () => {
-    if (panel.hidden) openPanel();
-    else closePanel();
+  launcher.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isOpen()) closePanel();
+    else openPanel();
   });
 
-  closeBtn.addEventListener("click", closePanel);
-  restartBtn.addEventListener("click", startChat);
+  closeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closePanel();
+  });
+
+  restartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    startChat();
+  });
+
+  document.querySelectorAll(".js-open-chat").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openPanel();
+      // Close mobile nav if open
+      const header = document.querySelector(".site-header");
+      const toggle = document.querySelector(".nav-toggle");
+      if (header) header.classList.remove("is-open");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open menu");
+      }
+    });
+  });
+
+  // Esc closes chat (desktop / some Android keyboards)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) closePanel();
+  });
+
+  // Keep panel usable when mobile keyboard opens
+  const syncViewport = () => {
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+    root.style.setProperty("--vv-height", `${vv.height}px`);
+    root.style.setProperty("--vv-offset", `${vv.offsetTop}px`);
+  };
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", syncViewport);
+    window.visualViewport.addEventListener("scroll", syncViewport);
+    syncViewport();
+  }
+
+  // Ensure closed on load
+  closePanel();
 })();
