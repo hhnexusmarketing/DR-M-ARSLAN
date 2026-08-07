@@ -57,6 +57,7 @@
 
   const openPanel = () => {
     panel.hidden = false;
+    panel.classList.add("is-open");
     launcher.setAttribute("aria-expanded", "true");
     if (!messagesEl.childElementCount) startChat();
     setTimeout(() => input.focus(), 50);
@@ -64,6 +65,7 @@
 
   const closePanel = () => {
     panel.hidden = true;
+    panel.classList.remove("is-open");
     launcher.setAttribute("aria-expanded", "false");
   };
 

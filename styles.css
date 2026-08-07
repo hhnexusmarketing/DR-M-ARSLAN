@@ -1031,8 +1031,13 @@ ul {
   overflow: hidden;
 }
 
-.chatbot-panel[hidden] {
+.chatbot-panel[hidden],
+.chatbot-panel:not(.is-open) {
   display: none !important;
+}
+
+.chatbot-panel.is-open {
+  display: flex !important;
 }
 
 .chatbot-head {
