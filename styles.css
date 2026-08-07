@@ -980,30 +980,9 @@ body.chat-open {
   animation: chatPulse 2.2s ease-in-out infinite;
 }
 
-.chatbot-launcher::before {
-  content: "Need help?";
-  position: absolute;
-  right: calc(100% + 0.65rem);
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--navy);
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.45rem 0.7rem;
-  border-radius: 8px;
-  white-space: nowrap;
-  box-shadow: 0 8px 20px rgba(0, 26, 56, 0.2);
-}
-
+.chatbot-launcher::before,
 .chatbot-launcher::after {
-  content: "";
-  position: absolute;
-  right: calc(100% + 0.35rem);
-  top: 50%;
-  transform: translateY(-50%);
-  border: 6px solid transparent;
-  border-left-color: var(--navy);
+  display: none !important;
 }
 
 .chatbot-launcher:hover {
