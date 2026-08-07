@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Al Suba Clinic | Dr. M. Arslan Amjad</title>
   <meta name="description" content="Online doctor consultation and lab services with Dr. M. Arslan Amjad at Al Suba Clinic, Lahore. Quality care, wherever you are." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <header class="site-header" id="top">
@@ -63,7 +64,7 @@
         <div class="hero-visual">
           <div class="hero-photo">
             <img
-              src="assets/doctor.jpg?v=6"
+              src="assets/doctor.jpg?v=7"
               alt="Dr. M. Arslan Amjad"
               width="900"
               height="1100"
@@ -124,7 +125,7 @@
           <p class="eyebrow">Online Care</p>
           <h2>Consult from anywhere. Safe, secure, confidential.</h2>
           <p>Easy · Fast · Reliable appointments for everyday health concerns — without leaving home.</p>
-          <a class="btn btn-primary" href="https://wa.me/923234979798" target="_blank" rel="noopener">WhatsApp 0323-4979798</a>
+          <a class="btn btn-primary js-open-chat" href="#chatbot" role="button">WhatsApp 0323-4979798</a>
         </div>
         <ul class="promise-list">
           <li>
@@ -299,13 +300,13 @@
 
       <form class="chatbot-form" id="chatbot-form" autocomplete="off">
         <label class="visually-hidden" for="chatbot-input">Your reply</label>
-        <input id="chatbot-input" name="message" type="text" placeholder="Type here…" required />
+        <input id="chatbot-input" name="message" type="text" placeholder="Type here..." required maxlength="200" enterkeyhint="send" autocomplete="name" />
         <button type="submit" aria-label="Send">Send</button>
       </form>
     </section>
   </div>
 
-  <script src="script.js?v=6"></script>
-  <script src="chatbot.js?v=6"></script>
+  <script src="script.js?v=7"></script>
+  <script charset="utf-8" src="chatbot.js?v=7"></script>
 </body>
 </html>

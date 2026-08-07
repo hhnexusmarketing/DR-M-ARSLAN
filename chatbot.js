@@ -74,7 +74,11 @@
     lockScroll(true);
     if (!messagesEl.childElementCount) startChat();
     // Avoid auto keyboard jump on phones
-    if (!isTouch) setTimeout(() => input.focus(), 50);
+    if (!isTouch) {
+      setTimeout(function () {
+        input.focus();
+      }, 50);
+    }
     messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
@@ -88,20 +92,26 @@
     }
   };
 
-  const addBubble = (text, who = "bot") => {
+  const addBubble = (text, who) => {
+    who = who || "bot";
     const el = document.createElement("div");
-    el.className = `chat-bubble ${who}`;
+    el.className = "chat-bubble " + who;
     el.textContent = text;
     messagesEl.appendChild(el);
     messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
-  const setInputVisible = (visible, placeholder = "Type here…") => {
+  const setInputVisible = (visible, placeholder) => {
+    placeholder = placeholder || "Type here...";
     form.classList.toggle("is-hidden", !visible);
     input.placeholder = placeholder;
     input.value = "";
     input.required = visible;
-    if (visible && !isTouch) setTimeout(() => input.focus(), 40);
+    if (visible && !isTouch) {
+      setTimeout(function () {
+        input.focus();
+      }, 40);
+    }
   };
 
   const clearOptions = () => {
@@ -112,19 +122,22 @@
   const showOptions = (items, onPick) => {
     clearOptions();
     optionsEl.hidden = false;
-    items.forEach((label) => {
+    items.forEach(function (label) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "chat-option";
       btn.textContent = label;
-      btn.addEventListener("click", () => onPick(label));
+      btn.addEventListener("click", function () {
+        onPick(label);
+      });
       optionsEl.appendChild(btn);
     });
     optionsEl.scrollTop = 0;
   };
 
   const openWhatsApp = (text) => {
-    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+    const url =
+      "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
     // Mobile browsers often block window.open
     if (isTouch) {
       window.location.href = url;
@@ -141,7 +154,9 @@
     btn.type = "button";
     btn.className = "chat-option wa";
     btn.textContent = "Send on WhatsApp";
-    btn.addEventListener("click", () => openWhatsApp(buildMessage()));
+    btn.addEventListener("click", function () {
+      openWhatsApp(buildMessage());
+    });
     optionsEl.appendChild(btn);
 
     const again = document.createElement("button");
@@ -157,20 +172,20 @@
       "Assalam o Alaikum,",
       "Al Suba Clinic enquiry:",
       "",
-      `Name: ${state.name}`,
-      `Location: ${state.location}`,
-      `Type: ${state.category}`,
+      "Name: " + state.name,
+      "Location: " + state.location,
+      "Type: " + state.category,
     ];
 
     if (state.category === "General") {
-      lines.push(`Request: ${state.generalNeed}`);
-      if (state.generalOther) lines.push(`Details: ${state.generalOther}`);
+      lines.push("Request: " + state.generalNeed);
+      if (state.generalOther) lines.push("Details: " + state.generalOther);
     }
 
     if (state.category === "Lab Test") {
       const test =
         state.labTest === "Not in the list" ? state.customTest : state.labTest;
-      lines.push(`Lab test: ${test}`);
+      lines.push("Lab test: " + test);
     }
 
     lines.push("", "Please guide / confirm. Thank you.");
@@ -181,7 +196,7 @@
     state.step = "category";
     setInputVisible(false);
     addBubble("Aapko kya chahiye?");
-    showOptions(["General", "Lab Test"], (choice) => {
+    showOptions(["General", "Lab Test"], function (choice) {
       state.category = choice;
       addBubble(choice, "user");
       clearOptions();
@@ -189,7 +204,7 @@
       if (choice === "General") {
         state.step = "general";
         addBubble("Aap appointment chahte hain ya kuch aur?");
-        showOptions(["Appointment", "Kuch aur"], (need) => {
+        showOptions(["Appointment", "Kuch aur"], function (need) {
           state.generalNeed = need;
           addBubble(need, "user");
           clearOptions();
@@ -197,7 +212,7 @@
           if (need === "Kuch aur") {
             state.step = "generalOther";
             addBubble("Please bataiye aapko kya chahiye?");
-            setInputVisible(true, "Apni zaroorat likhein…");
+            setInputVisible(true, "Apni zaroorat likhein...");
             return;
           }
 
@@ -208,7 +223,7 @@
 
       state.step = "lab";
       addBubble("Kaunsa lab test chahiye? List se select karein:");
-      showOptions(LAB_TESTS, (test) => {
+      showOptions(LAB_TESTS, function (test) {
         state.labTest = test;
         addBubble(test, "user");
         clearOptions();
@@ -216,7 +231,7 @@
         if (test === "Not in the list") {
           state.step = "customLab";
           addBubble("Please likhein kaunsa test chahiye?");
-          setInputVisible(true, "Test ka naam likhein…");
+          setInputVisible(true, "Test ka naam likhein...");
           return;
         }
 
@@ -235,23 +250,23 @@
   };
 
   const startChat = () => {
-    Object.assign(state, {
-      step: "name",
-      name: "",
-      location: "",
-      category: "",
-      generalNeed: "",
-      generalOther: "",
-      labTest: "",
-      customTest: "",
-    });
+    state.step = "name";
+    state.name = "";
+    state.location = "";
+    state.category = "";
+    state.generalNeed = "";
+    state.generalOther = "";
+    state.labTest = "";
+    state.customTest = "";
     messagesEl.innerHTML = "";
     clearOptions();
-    addBubble("Assalam o Alaikum! Al Suba Clinic assistant. Aapka naam kya hai?");
-    setInputVisible(true, "Apna naam likhein…");
+    addBubble(
+      "Assalam o Alaikum! Al Suba Clinic assistant. Aapka naam kya hai?"
+    );
+    setInputVisible(true, "Apna naam likhein...");
   };
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
     const value = input.value.trim();
     if (!value) return;
@@ -262,8 +277,10 @@
     if (state.step === "name") {
       state.name = value;
       state.step = "location";
-      addBubble(`Shukriya, ${state.name}. Aap kis location / area se hain?`);
-      setInputVisible(true, "Location / area likhein…");
+      addBubble(
+        "Shukriya, " + state.name + ". Aap kis location / area se hain?"
+      );
+      setInputVisible(true, "Location / area likhein...");
       return;
     }
 
@@ -285,28 +302,27 @@
     }
   });
 
-  launcher.addEventListener("click", (e) => {
+  launcher.addEventListener("click", function (e) {
     e.preventDefault();
     if (isOpen()) closePanel();
     else openPanel();
   });
 
-  closeBtn.addEventListener("click", (e) => {
+  closeBtn.addEventListener("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
     closePanel();
   });
 
-  restartBtn.addEventListener("click", (e) => {
+  restartBtn.addEventListener("click", function (e) {
     e.preventDefault();
     startChat();
   });
 
-  document.querySelectorAll(".js-open-chat").forEach((el) => {
-    el.addEventListener("click", (e) => {
+  document.querySelectorAll(".js-open-chat").forEach(function (el) {
+    el.addEventListener("click", function (e) {
       e.preventDefault();
       openPanel();
-      // Close mobile nav if open
       const header = document.querySelector(".site-header");
       const toggle = document.querySelector(".nav-toggle");
       if (header) header.classList.remove("is-open");
@@ -317,17 +333,15 @@
     });
   });
 
-  // Esc closes chat (desktop / some Android keyboards)
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && isOpen()) closePanel();
   });
 
-  // Keep panel usable when mobile keyboard opens
   const syncViewport = () => {
     if (!window.visualViewport) return;
     const vv = window.visualViewport;
-    root.style.setProperty("--vv-height", `${vv.height}px`);
-    root.style.setProperty("--vv-offset", `${vv.offsetTop}px`);
+    root.style.setProperty("--vv-height", vv.height + "px");
+    root.style.setProperty("--vv-offset", vv.offsetTop + "px");
   };
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", syncViewport);
@@ -335,6 +349,5 @@
     syncViewport();
   }
 
-  // Ensure closed on load
   closePanel();
 })();

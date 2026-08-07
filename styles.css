@@ -1261,8 +1261,20 @@ body.chat-open {
     border-radius: 16px;
   }
 
+  /* When keyboard opens, use visualViewport height if available */
+  .chatbot-panel.is-open {
+    max-height: var(--vv-height, 100dvh);
+  }
+
   .chatbot-options {
     max-height: 38%;
+  }
+
+  html.chat-open,
+  body.chat-open {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
   }
 }
 
