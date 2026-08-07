@@ -29,11 +29,11 @@
     "PT / APTT / INR",
     "Semen Analysis",
     "Sputum for AFB",
-    "فہرست میں نہیں",
+    "Not in the list",
   ];
 
-  const root = document.getElementById("chatbot");
-  if (!root) return;
+  const rootEl = document.getElementById("chatbot");
+  if (!rootEl) return;
 
   const launcher = document.getElementById("chatbot-launcher");
   const panel = document.getElementById("chatbot-panel");
@@ -95,19 +95,19 @@
     who = who || "bot";
     const el = document.createElement("div");
     el.className = "chat-bubble " + who;
-    el.lang = "ur";
-    el.dir = "rtl";
+    el.lang = "en";
+    el.dir = "ltr";
     el.textContent = text;
     messagesEl.appendChild(el);
     messagesEl.scrollTop = messagesEl.scrollHeight;
   };
 
   const setInputVisible = (visible, placeholder) => {
-    placeholder = placeholder || "یہاں لکھیں...";
+    placeholder = placeholder || "Type here...";
     form.classList.toggle("is-hidden", !visible);
     input.placeholder = placeholder;
-    input.lang = "ur";
-    input.dir = "rtl";
+    input.lang = "en";
+    input.dir = "ltr";
     input.value = "";
     input.required = visible;
     if (visible && !isTouch) {
@@ -125,13 +125,13 @@
   const showOptions = (items, onPick) => {
     clearOptions();
     optionsEl.hidden = false;
-    optionsEl.dir = "rtl";
+    optionsEl.dir = "ltr";
     items.forEach(function (label) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "chat-option";
-      btn.lang = "ur";
-      btn.dir = "rtl";
+      btn.lang = "en";
+      btn.dir = "ltr";
       btn.textContent = label;
       btn.addEventListener("click", function () {
         onPick(label);
@@ -158,7 +158,7 @@
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chat-option wa";
-    btn.textContent = "واٹس ایپ پر بھیجیں";
+    btn.textContent = "Send on WhatsApp";
     btn.addEventListener("click", function () {
       openWhatsApp(buildMessage());
     });
@@ -167,59 +167,57 @@
     const again = document.createElement("button");
     again.type = "button";
     again.className = "chat-option";
-    again.lang = "ur";
-    again.dir = "rtl";
-    again.textContent = "دوبارہ شروع کریں";
+    again.textContent = "Start again";
     again.addEventListener("click", startChat);
     optionsEl.appendChild(again);
   };
 
   const buildMessage = () => {
     const lines = [
-      "السلام علیکم،",
-      "آل صبا کلینک پوچھ گچھ:",
+      "Assalam o Alaikum,",
+      "Al Suba Clinic enquiry:",
       "",
-      "نام: " + state.name,
-      "مقام: " + state.location,
-      "قسم: " + state.category,
+      "Name: " + state.name,
+      "Location: " + state.location,
+      "Type: " + state.category,
     ];
 
-    if (state.category === "جنرل") {
-      lines.push("درخواست: " + state.generalNeed);
-      if (state.generalOther) lines.push("تفصیل: " + state.generalOther);
+    if (state.category === "General") {
+      lines.push("Request: " + state.generalNeed);
+      if (state.generalOther) lines.push("Details: " + state.generalOther);
     }
 
-    if (state.category === "لیب ٹیسٹ") {
+    if (state.category === "Lab Test") {
       const test =
-        state.labTest === "فہرست میں نہیں" ? state.customTest : state.labTest;
-      lines.push("لیب ٹیسٹ: " + test);
+        state.labTest === "Not in the list" ? state.customTest : state.labTest;
+      lines.push("Lab test: " + test);
     }
 
-    lines.push("", "براہ کرم رہنمائی / تصدیق فرمائیں۔ شکریہ۔");
+    lines.push("", "Please guide / confirm. Thank you.");
     return lines.join("\n");
   };
 
   const askCategory = () => {
     state.step = "category";
     setInputVisible(false);
-    addBubble("آپ کو کیا چاہیے؟");
-    showOptions(["جنرل", "لیب ٹیسٹ"], function (choice) {
+    addBubble("Aapko kya chahiye?");
+    showOptions(["General", "Lab Test"], function (choice) {
       state.category = choice;
       addBubble(choice, "user");
       clearOptions();
 
-      if (choice === "جنرل") {
+      if (choice === "General") {
         state.step = "general";
-        addBubble("کیا آپ اپائنٹمنٹ چاہتے ہیں یا کچھ اور؟");
-        showOptions(["اپائنٹمنٹ", "کچھ اور"], function (need) {
+        addBubble("Aap appointment chahte hain ya kuch aur?");
+        showOptions(["Appointment", "Kuch aur"], function (need) {
           state.generalNeed = need;
           addBubble(need, "user");
           clearOptions();
 
-          if (need === "کچھ اور") {
+          if (need === "Kuch aur") {
             state.step = "generalOther";
-            addBubble("براہ کرم بتائیں آپ کو کیا چاہیے؟");
-            setInputVisible(true, "اپنی ضرورت لکھیں...");
+            addBubble("Please bataiye aapko kya chahiye?");
+            setInputVisible(true, "Apni zaroorat likhein...");
             return;
           }
 
@@ -229,16 +227,16 @@
       }
 
       state.step = "lab";
-      addBubble("کون سا لیب ٹیسٹ چاہیے؟ فہرست سے منتخب کریں:");
+      addBubble("Kaunsa lab test chahiye? List se select karein:");
       showOptions(LAB_TESTS, function (test) {
         state.labTest = test;
         addBubble(test, "user");
         clearOptions();
 
-        if (test === "فہرست میں نہیں") {
+        if (test === "Not in the list") {
           state.step = "customLab";
-          addBubble("براہ کرم لکھیں کون سا ٹیسٹ چاہیے؟");
-          setInputVisible(true, "ٹیسٹ کا نام لکھیں...");
+          addBubble("Please likhein kaunsa test chahiye?");
+          setInputVisible(true, "Test ka naam likhein...");
           return;
         }
 
@@ -251,7 +249,7 @@
     state.step = "done";
     setInputVisible(false);
     addBubble(
-      "شکریہ! نیچے بٹن سے یہ تفصیلات واٹس ایپ پر بھیج سکتے ہیں۔"
+      "Shukriya! Neeche button se yeh details WhatsApp par bhej sakte hain."
     );
     showWhatsApp();
   };
@@ -268,9 +266,9 @@
     messagesEl.innerHTML = "";
     clearOptions();
     addBubble(
-      "السلام علیکم! آل صبا کلینک اسسٹنٹ۔ آپ کا نام کیا ہے؟"
+      "Assalam o Alaikum! Al Suba Clinic assistant. Aapka naam kya hai?"
     );
-    setInputVisible(true, "اپنا نام لکھیں...");
+    setInputVisible(true, "Apna naam likhein...");
   };
 
   form.addEventListener("submit", function (e) {
@@ -285,9 +283,9 @@
       state.name = value;
       state.step = "location";
       addBubble(
-        "شکریہ، " + state.name + "۔ آپ کس مقام / علاقے سے ہیں؟"
+        "Shukriya, " + state.name + ". Aap kis location / area se hain?"
       );
-      setInputVisible(true, "مقام / علاقہ لکھیں...");
+      setInputVisible(true, "Location / area likhein...");
       return;
     }
 
@@ -347,8 +345,8 @@
   const syncViewport = () => {
     if (!window.visualViewport) return;
     const vv = window.visualViewport;
-    root.style.setProperty("--vv-height", vv.height + "px");
-    root.style.setProperty("--vv-offset", vv.offsetTop + "px");
+    rootEl.style.setProperty("--vv-height", vv.height + "px");
+    rootEl.style.setProperty("--vv-offset", vv.offsetTop + "px");
   };
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", syncViewport);
