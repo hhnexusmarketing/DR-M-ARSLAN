@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://drmarslan.hhnexusmarketing.com/sitemap.xml
